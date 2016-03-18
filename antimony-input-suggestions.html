@@ -1,0 +1,164 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-input/paper-input-container.html">
+<link rel="import" href="../iron-input/iron-input.html">
+<link rel="import" href="../paper-menu/paper-menu.html">
+<link rel="import" href="../paper-item/paper-item.html">
+
+<dom-module id="antimony-input-suggestions">
+<style>
+    :host {
+        display:inline-block;
+    }
+    paper-menu {
+        max-height:300px;
+        overflow: hidden;
+    }
+    #autocomplete {
+        position:relative;
+    }
+    #collapse {
+        position:absolute;
+        top:64px;
+        left:0;
+        z-index:9999;
+        width:100%;
+        @apply(--shadow-elevation-2dp)
+    }
+</style>
+<template>
+    <div id="autocomplete">
+        <paper-input-container>
+            <label>{{label}}</label>
+            <input id="searchBox" class="paper-input-input" is="iron-input" bind-value="{{searchValue::input}}" on-keydown="_enter"></input>
+        </paper-input-container>
+        <div id="collapse">
+            <paper-menu id="searchResults">
+                <template id="resultList" is="dom-repeat" items="{{_listOptions}}" filter="_listFilter">
+                    <paper-item on-tap="_selectItem">{{item}}</paper-item>
+                </template>
+            </paper-menu>
+        </div>
+    </div>
+</template>
+
+<script type="text/javascript">
+	Polymer({
+		is: "antimony-input-suggestions",
+        properties: {
+            optionList: {
+                type: String,
+                observer: '_optionListChanged'
+            },
+            label: {
+              type: String,
+              value: ''  
+            },
+            searchValue: {
+                type: String,
+                value: '',
+                observer: "_valueChanged"
+            },
+            value: {
+                type: String,
+                value: ''
+            },
+           _listOptions: {
+               type: Array,
+               value: function() { return []; }
+           }  
+        }, 
+        ready: function() {
+            this.$.collapse.style.display = 'none';
+        },
+        _valueChanged: function(e) {
+            var collapse = this.$.collapse;
+            var searchResults = this.$.searchResults;
+            if (e != '' && collapse.style.display != 'block') {
+                this.$.resultList.render();
+                if (searchResults.items.length > 0) {
+                    collapse.style.display='block';
+                    searchResults.selected = 0;
+                }
+            } else if (e == '' && collapse.style.display == 'block') {
+                collapse.style.display = 'none';
+            } else {
+                this.$.resultList.render();
+                if (searchResults.items.length == 0) {
+                    collapse.style.display = 'none';
+                }
+            }
+        },
+        _listFilter: function(item) {
+            var searchValue, lastComma = this.searchValue.lastIndexOf(',');
+            if (lastComma > 0 && lastComma + 1 < this.searchValue.length) {
+                searchValue = this.searchValue.substr(lastComma + 1).trim();
+            } else {
+                searchValue = this.searchValue;
+            }
+            if (item && searchValue) {
+                return item.toLowerCase().includes(
+                searchValue.toLowerCase());
+            }
+            return false;
+        },
+        _optionListChanged: function(e) {
+            var list = document.getElementById(e);
+            if (list.nodeName=="DATALIST") {
+                var listOptions = [];
+                for (var child in list.children) {
+                    if (!isNaN(child)) {
+                        listOptions.push(list.children[child].value);
+                    }
+                }
+                this._listOptions = listOptions; 
+            }
+        },
+        _selectItem: function(event) {
+            this._updateString(event.model.item);
+        },
+        _enter: function(event) {
+            var searchResults = this.$.searchResults;
+            // Microsft Edge places the key inside event.key and chrome uses event.code
+            var keyCode = event.code || event.key || '';
+            switch (keyCode) {
+                case 'Enter': if (searchResults.items.length > 0) {
+                                 this._updateString(searchResults.items[searchResults.selected].innerText.trim());
+                              }
+                 break;
+                 case 'ArrowUp': 
+                 case 'Up':      this._changeSelection(searchResults, -1);
+                                 event.preventDefault();
+                 break;
+                 case 'ArrowDown': 
+                 case 'Down':      this._changeSelection(searchResults, 1);
+                                   event.preventDefault();
+                 break;
+            }
+        },
+        _updateString: function(option) {
+            var lastComma = this.searchValue.lastIndexOf(',');
+            var newValue = lastComma<0?option:this.searchValue.substring(0, lastComma) + ', ' + option;
+            this.set('searchValue', newValue);
+            this.set('value', newValue);
+            this.$.collapse.style.display = 'none';
+        },
+        _changeSelection: function(menu, direction) {
+            var maxSelection = menu.items.length - 1;
+            var newSelection = menu.selected + direction;
+            // keep the selection within the range of the number of menu options
+            menu.selected = newSelection<0?maxSelection:(newSelection>maxSelection?0:newSelection);
+        }
+	});
+    if (!String.prototype.trim) {
+        String.prototype.trim = function () {
+        return this.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
+        };
+    }
+    if (!String.prototype.includes) {
+        String.prototype.includes = function() {
+         'use strict';
+         return String.prototype.indexOf.apply(this, arguments) !== -1;
+        };
+    }
+</script>
+</dom-module>

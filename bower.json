@@ -1,0 +1,29 @@
+{
+  "name": "paper-input-suggestions",
+  "description": "Autocomplete based on paper input",
+  "main": "paper-input-suggestions.html",
+  "moduleType": [],
+  "keywords": [
+    "web-component",
+    "polymer",
+    "autocomplete"
+  ],
+  "authors": [
+    "Stephen Brown"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.0.0",
+    "paper-input": "PolymerElements/paper-input#^1.0.0",
+    "paper-item": "polymerelements/paper-item#^1.0.0",
+    "paper-menu": "polymerelements/papermenu#^1.0.0"
+  }
+}
