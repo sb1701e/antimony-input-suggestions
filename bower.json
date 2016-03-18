@@ -1,7 +1,7 @@
 {
-  "name": "paper-input-suggestions",
+  "name": "antimony-input-suggestions",
   "description": "Autocomplete based on paper input",
-  "main": "paper-input-suggestions.html",
+  "main": "antimony-input-suggestions.html",
   "moduleType": [],
   "keywords": [
     "web-component",
