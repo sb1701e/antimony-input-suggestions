@@ -29,7 +29,7 @@
     <div id="autocomplete">
         <paper-input-container>
             <label>{{label}}</label>
-            <input id="searchBox" class="paper-input-input" is="iron-input" bind-value="{{searchValue::input}}" on-keydown="_enter"></input>
+            <input id="searchBox" class="paper-input-input" is="iron-input" bind-value="{{value::input}}" on-keydown="_enter"></input>
         </paper-input-container>
         <div id="collapse">
             <paper-menu id="searchResults">
@@ -53,14 +53,10 @@
               type: String,
               value: ''  
             },
-            searchValue: {
+            value: {
                 type: String,
                 value: '',
                 observer: "_valueChanged"
-            },
-            value: {
-                type: String,
-                value: ''
             },
            _listOptions: {
                type: Array,
@@ -89,11 +85,11 @@
             }
         },
         _listFilter: function(item) {
-            var searchValue, lastComma = this.searchValue.lastIndexOf(',');
-            if (lastComma > 0 && lastComma + 1 < this.searchValue.length) {
-                searchValue = this.searchValue.substr(lastComma + 1).trim();
+            var searchValue, lastComma = this.value.lastIndexOf(',');
+            if (lastComma > 0 && lastComma + 1 < this.value.length) {
+                searchValue = this.value.substr(lastComma + 1).trim();
             } else {
-                searchValue = this.searchValue;
+                searchValue = this.value;
             }
             if (item && searchValue) {
                 return item.toLowerCase().includes(
@@ -121,6 +117,7 @@
             // Microsft Edge places the key inside event.key and chrome uses event.code
             var keyCode = event.code || event.key || '';
             switch (keyCode) {
+                case 'Tab': event.preventDefault();
                 case 'Enter': if (searchResults.items.length > 0) {
                                  this._updateString(searchResults.items[searchResults.selected].innerText.trim());
                               }
@@ -136,10 +133,9 @@
             }
         },
         _updateString: function(option) {
-            var lastComma = this.searchValue.lastIndexOf(',');
-            var newValue = lastComma<0?option:this.searchValue.substring(0, lastComma) + ', ' + option;
-            this.set('searchValue', newValue);
-            this.set('value', newValue);
+            var lastComma = this.value.lastIndexOf(',');
+            var newValue = lastComma<0?option:this.value.substring(0, lastComma) + ', ' + option;
+            this.value = newValue;
             this.$.collapse.style.display = 'none';
         },
         _changeSelection: function(menu, direction) {

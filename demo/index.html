@@ -1,0 +1,38 @@
+<html>
+<head>
+	<title>sb1701e</title>
+	<script src="../../webcomponentsjs/webcomponents.min.js"></script>
+	<link rel="import" href="../antimony-input-suggestions.html">
+    <style is="custom-style">
+        antimony-input-suggestions {
+            width:300px;
+        }
+    </style>
+    <script>
+        function getValue() {
+            var input = document.getElementById("fav-fruits");
+            var output = document.getElementById("input-value");
+            output.innerText = input.value;
+        }    
+    </script>
+</head>
+<body>
+	<h2>sb1701e/antimony-input-suggestions</h2>
+	<antimony-input-suggestions id="fav-fruits" option-list="options" label="Favorite fruits (comma separated)"></antimony-input-suggestions>
+    <button onclick="getValue()">Get input Value</button><span style="margin-left:1em;" id="input-value"></span>
+    <datalist id="options">
+        <option value="Apple"></option>
+        <option value="Banana"></option>
+        <option value="Cherry"></option>
+        <option value="Durian"></option>
+        <option value="Elderberry"></option>
+        <option value="Fig"></option>
+        <option value="Guava"></option>
+        <option value="Huckleberry"></option>
+        <option value="Kiwi"></option>
+        <option value="Lemon"></option>
+        <option value="Mango"></option>
+        <option value="Nectarine"></option>
+    </datalist>
+</body>
+</html>
