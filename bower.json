@@ -1,10 +1,12 @@
 {
   "name": "antimony-input-suggestions",
+  "version": "1.0.0",
   "description": "Autocomplete based on paper input",
   "main": "antimony-input-suggestions.html",
   "moduleType": [],
   "keywords": [
     "web-component",
+    "web-components",
     "polymer",
     "autocomplete"
   ],
